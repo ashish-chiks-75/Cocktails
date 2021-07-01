@@ -6,11 +6,13 @@ const AppContext = React.createContext();
 
 const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("a");
+  const [searchText, setSearchText] = useState("");
   const [cocktails, setCocktails] = useState([]);
+  const [prevSearchText, setPrevSearchText] = useState("");
 
   const fetchDrinks = useCallback(async () => {
     setLoading(true);
+    setPrevSearchText(searchText);
     try {
       const response = await fetch(`${url}${searchText}`);
       const data = await response.json();
@@ -43,7 +45,14 @@ const AppProvider = ({ children }) => {
 
   return (
     <AppContext.Provider
-      value={{ loading, searchText, cocktails, setSearchText }}
+      value={{
+        loading,
+        searchText,
+        cocktails,
+        setSearchText,
+        prevSearchText,
+        setPrevSearchText,
+      }}
     >
       {children}
     </AppContext.Provider>

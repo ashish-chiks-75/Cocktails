@@ -98,7 +98,7 @@ const SingleCocktail = () => {
         </div>
       </div>
       <Link to="/" className="btn btn-primary">
-        back home
+        back 
       </Link>
     </section>
   );
