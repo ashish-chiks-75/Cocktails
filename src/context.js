@@ -49,7 +49,7 @@ const AppProvider = ({ children }) => {
   }, [state.searchText, fetchDrinks]);
 
   return (
-    <AppContext.Provider value={{ state }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>
   );
 };
 // make sure use

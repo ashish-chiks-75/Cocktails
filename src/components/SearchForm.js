@@ -2,7 +2,7 @@ import React from "react";
 import { useGlobalContext } from "../context";
 
 const SearchForm = () => {
-  const { state } = useGlobalContext();
+  const { state, dispatch } = useGlobalContext();
   const searchRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -19,9 +19,10 @@ const SearchForm = () => {
             type="text"
             id="name"
             ref={searchRef}
-            // onChange={() =>
-            //   // dispatch({ type: "SEARCH", payload: searchRef.current.value })
-            // }
+            autoComplete="off"
+            onChange={() =>
+              dispatch({ type: "SEARCH", payload: searchRef.current.value })
+            }
           ></input>
         </div>
       </form>
