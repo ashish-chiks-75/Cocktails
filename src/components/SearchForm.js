@@ -2,13 +2,13 @@ import React from "react";
 import { useGlobalContext } from "../context";
 
 const SearchForm = () => {
-  const { setSearchText, prevSearchText } = useGlobalContext();
+  const { state, dispatch } = useGlobalContext();
   const searchRef = React.useRef(null);
 
   React.useEffect(() => {
-    searchRef.current.value = prevSearchText
-    searchRef.current.focus()
-  }, [prevSearchText])
+    searchRef.current.value = state.prevSearchText;
+    searchRef.current.focus();
+  }, [state.prevSearchText]);
 
   return (
     <section className="search search">
@@ -19,7 +19,10 @@ const SearchForm = () => {
             type="text"
             id="name"
             ref={searchRef}
-            onChange={() => setSearchText(searchRef.current.value)}
+            autoComplete="off"
+            onChange={() =>
+              dispatch({ type: "SEARCH", payload: searchRef.current.value })
+            }
           ></input>
         </div>
       </form>

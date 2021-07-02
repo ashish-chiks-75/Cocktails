@@ -1,24 +1,29 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import { useCallback } from "react";
+import reducer from "./reducer";
 
 const url = "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
 const AppContext = React.createContext();
 
+const defaultState = {
+  loading: false,
+  searchText: "",
+  cocktails: [],
+  prevSearchText: "",
+};
+
 const AppProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [cocktails, setCocktails] = useState([]);
-  const [prevSearchText, setPrevSearchText] = useState("");
+  const [state, dispatch] = useReducer(reducer, defaultState);
 
   const fetchDrinks = useCallback(async () => {
-    setLoading(true);
-    setPrevSearchText(searchText);
+    dispatch({ type: "LOADING" });
     try {
-      const response = await fetch(`${url}${searchText}`);
+      const response = await fetch(`${url}${state.searchText}`);
       const data = await response.json();
+      let newCocktails;
 
       if (data.drinks) {
-        const newCocktails = data.drinks.map((item) => {
+        newCocktails = data.drinks.map((item) => {
           const { idDrink, strDrink, strDrinkThumb, strAlcoholic, strGlass } =
             item;
           return {
@@ -29,33 +34,22 @@ const AppProvider = ({ children }) => {
             glass: strGlass,
           };
         });
-        setCocktails(newCocktails);
       } else {
-        setCocktails([]);
+        newCocktails = [];
       }
+
+      dispatch({ type: "NEW", payload: newCocktails });
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
-  }, [searchText]);
+  }, [state.searchText]);
 
   useEffect(() => {
     fetchDrinks();
-  }, [searchText, fetchDrinks]);
+  }, [state.searchText, fetchDrinks]);
 
   return (
-    <AppContext.Provider
-      value={{
-        loading,
-        searchText,
-        cocktails,
-        setSearchText,
-        prevSearchText,
-        setPrevSearchText,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>
   );
 };
 // make sure use
